@@ -14,7 +14,7 @@ interface CharEquipmentType {
 }
 
 const CharEquipment = ({ data }: CharEquipmentType) => {
-  console.log("🚀 ~ CharEquipment ~ data:", data);
+  // console.log("🚀 ~ CharEquipment ~ data:", data);
   const equipmentOrder = [1, 5, 2, 3, 4, 0];
   const equipMentData = [...data]?.slice(0, 6);
   // console.log("🚀 ~ CharEquipment ~ equipMentData:", equipMentData);
@@ -24,20 +24,7 @@ const CharEquipment = ({ data }: CharEquipmentType) => {
   const accessoryData = [...data]?.slice(6, 11);
   // console.log("🚀 ~ CharEquipment ~ accessoryData:", accessoryData);
 
-  const totalTranscend = getLastNumber(
-    cleanText(
-      jsonFormatter(data[0]?.Tooltip)?.Element_010.value?.Element_000
-        ?.contentStr?.Element_001?.contentStr
-    )
-  );
 
-  const elixir = jsonFormatter(data[1]?.Tooltip);
-  const elixirText =
-    elixir?.Element_012?.value?.Element_000?.topStr ||
-    elixir?.Element_011?.value?.Element_000?.topStr;
-  const elixirResult = [
-    ...elixirText?.matchAll(/<FONT[^>]*>([^<]+)<\/FONT>/gi),
-  ].map((item) => item[1]);
 
   return (
     <View style={styles.container}>
@@ -45,40 +32,6 @@ const CharEquipment = ({ data }: CharEquipmentType) => {
         {renderEquipment?.map((item, i) => {
           return <EquipmentItem data={item} key={i} />;
         })}
-        <ImageBackground
-          source={{
-            uri: "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/pc/profile/bg_elixir.png?b571c4dbcdc798222dfb",
-          }}
-          imageStyle={{ width: 150, height: 30 }}
-        >
-          <Text
-            style={{
-              marginLeft: 35,
-              color: theme.text.yellow,
-              justifyContent: "center",
-              lineHeight: 30,
-            }}
-          >
-            {elixirResult[1]?.replaceAll(/[()]/g, "")}
-          </Text>
-        </ImageBackground>
-        <ImageBackground
-          source={{
-            uri: "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/pc/profile/bg_transcendence.png?2d5c0eb8e6586d9284b9",
-          }}
-          imageStyle={{ width: 150, height: 30 }}
-        >
-          <Text
-            style={{
-              marginLeft: 35,
-              color: theme.text.yellow,
-              justifyContent: "center",
-              lineHeight: 30,
-            }}
-          >
-            {totalTranscend}
-          </Text>
-        </ImageBackground>
       </View>
       <View style={{ gap: 10 }}>
         {accessoryData?.map((item, i) => (
