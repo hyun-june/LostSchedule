@@ -9,13 +9,14 @@ type RaidKey =
 
 type RaidDifficulty = "normal" | "hard";
 
-interface RaidType {
+export interface RaidType {
   id: string;
   raidKey: RaidKey;
   difficulty: RaidDifficulty;
   title: string;
   level: number;
   gold: number;
+  more: number;
 }
 
 export const raidData: RaidType[] = [
@@ -26,6 +27,7 @@ export const raidData: RaidType[] = [
     title: "종막: 카제로스(노말) 1~2관문",
     level: 1710,
     gold: 40000,
+    more: 12800,
   },
   {
     id: "kazeros-hard",
@@ -34,6 +36,7 @@ export const raidData: RaidType[] = [
     title: "종막: 카제로스(하드) 1~2관문",
     level: 1730,
     gold: 52000,
+    more: 16640,
   },
   {
     id: "armorche-normal",
@@ -42,6 +45,7 @@ export const raidData: RaidType[] = [
     title: "4막: 아르모체(노말) 1~2관문",
     level: 1700,
     gold: 33000,
+    more: 10560,
   },
   {
     id: "armorche-hard",
@@ -50,6 +54,7 @@ export const raidData: RaidType[] = [
     title: "4막: 아르모체(하드) 1~2관문",
     level: 1720,
     gold: 42000,
+    more: 13440,
   },
   {
     id: "mordoom-normal",
@@ -58,6 +63,7 @@ export const raidData: RaidType[] = [
     title: "3막: 모르둠(노말) 1~3관문",
     level: 1680,
     gold: 21000,
+    more: 7010,
   },
   {
     id: "mordoom-hard",
@@ -66,6 +72,7 @@ export const raidData: RaidType[] = [
     title: "3막: 모르둠(하드) 1~3관문",
     level: 1700,
     gold: 27000,
+    more: 8350,
   },
   {
     id: "abrelshud-normal",
@@ -74,6 +81,7 @@ export const raidData: RaidType[] = [
     title: "2막: 아브렐슈드(노말) 1~2관문",
     level: 1670,
     gold: 16500,
+    more: 5540,
   },
   {
     id: "abrelshud-hard",
@@ -82,6 +90,7 @@ export const raidData: RaidType[] = [
     title: "2막: 아브렐슈드(하드) 1~2관문",
     level: 1690,
     gold: 23000,
+    more: 7500,
   },
   {
     id: "egir-normal",
@@ -90,6 +99,7 @@ export const raidData: RaidType[] = [
     title: "1막: 에기르(노말) 1~2관문",
     level: 1660,
     gold: 11500,
+    more: 2530,
   },
   {
     id: "egir-hard",
@@ -98,6 +108,7 @@ export const raidData: RaidType[] = [
     title: "1막: 에기르(하드) 1~2관문",
     level: 1680,
     gold: 18000,
+    more: 5970,
   },
 
   {
@@ -107,6 +118,7 @@ export const raidData: RaidType[] = [
     title: "서막: 에키드나(하드) 1~2관문",
     level: 1640,
     gold: 7200,
+    more: 2350,
   },
   {
     id: "behemoth-normal",
@@ -115,5 +127,6 @@ export const raidData: RaidType[] = [
     title: "베히모스(노말) 1~2관문",
     level: 1640,
     gold: 7200,
+    more: 2350,
   },
 ];

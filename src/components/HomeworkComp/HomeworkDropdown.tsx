@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, Alert } from "react-native";
 import DropDownPicker, {
   DropDownPickerProps,
 } from "react-native-dropdown-picker";
-import { useGetRoster } from "../../hooks/useGetCharacter";
-import useSearchStore from "../../store/useSearchStore";
+import { CharData } from "../../models/charType";
+import useRosterStore from "../../store/useRosterStore";
 
 interface ItemType {
   label: string;
@@ -19,16 +19,17 @@ interface Character {
   ItemAvgLevel: string;
 }
 
-const HomeworkDropdown = () => {
-  const { myChar } = useSearchStore();
+interface HomeworkDropdownProps {
+  data: CharData[];
+}
+
+const HomeworkDropdown = ({ data }: HomeworkDropdownProps) => {
   const [sortData, setSortData] = useState<Character[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string[]>([]);
   const [items, setItems] = useState<ItemType[]>([]);
   const MAX_COUNT = 6;
-
-  // const { data, isLoading } = useGetRoster(myChar);
-  const { data, isLoading } = useGetRoster("피엇음");
+  const { roster, setRoster } = useRosterStore();
 
   const sortByItemLevel = (data: Character[]) =>
     [...data].sort(
@@ -49,7 +50,6 @@ const HomeworkDropdown = () => {
 
     const mappedItems: ItemType[] = sortData.map((char) => {
       const level = Number(char.ItemAvgLevel.replace(/,/g, "")).toFixed(0);
-      console.log("🚀 ~ HomeworkDropdown ~ level:", level);
 
       return {
         label: `LV.${level} @${char.CharacterClassName} ${char.CharacterName}`,
@@ -68,17 +68,16 @@ const HomeworkDropdown = () => {
         Alert.alert("최대 6명까지 선택할 수 있어요");
         return prev;
       }
+      setRoster(next);
       return next;
     });
   };
-
-  console.log("🚀 ~ HomeworkDropdown ~ items:", items);
 
   return (
     <View style={styles.box}>
       <DropDownPicker
         open={open}
-        value={value}
+        value={roster}
         items={items}
         setOpen={setOpen}
         setValue={handleSetValue}

@@ -1,13 +1,28 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import HomeworkDropdown from "../components/HomeworkComp/HomeworkDropdown";
-import AppLayout from "../components/Layout/AppLayout";
+import HomeworkRaidBox from "../components/HomeworkComp/HomeworkRaidBox";
+import useSearchStore from "../store/useSearchStore";
+import { useGetRoster } from "../hooks/useGetCharacter";
+import useRosterStore from "../store/useRosterStore";
+import { useEffect } from "react";
 
 const Homework = () => {
+  const { myChar } = useSearchStore();
+  const { roster, fetchRoster } = useRosterStore();
+  console.log("🚀 ~ Homework ~ roster:", roster);
+
+  // const { data, isLoading } = useGetRoster(myChar);
+  const { data, isLoading } = useGetRoster("피엇음");
+  useEffect(() => {
+    fetchRoster();
+  }, []);
   return (
     <View>
-      <HomeworkDropdown />
-      <AppLayout></AppLayout>
+      <HomeworkDropdown data={data} />
+
+      <ScrollView style={{ padding: 10, marginVertical: 20 }}>
+        <HomeworkRaidBox />
+      </ScrollView>
     </View>
   );
 };

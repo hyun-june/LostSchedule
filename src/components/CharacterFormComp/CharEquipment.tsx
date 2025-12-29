@@ -1,12 +1,6 @@
-import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
+import { View, StyleSheet } from "react-native";
 import EquipmentItem from "./EquipmentItem";
 import AccessoryItem from "./AccessoryItem";
-import {
-  cleanText,
-  getLastNumber,
-  jsonFormatter,
-} from "../../utils/formatJsonData";
-import { theme } from "../../theme/theme";
 import { ArmoryEquipment } from "../../models/entities";
 
 interface CharEquipmentType {
@@ -23,8 +17,6 @@ const CharEquipment = ({ data }: CharEquipmentType) => {
 
   const accessoryData = [...data]?.slice(6, 11);
   // console.log("🚀 ~ CharEquipment ~ accessoryData:", accessoryData);
-
-
 
   return (
     <View style={styles.container}>
