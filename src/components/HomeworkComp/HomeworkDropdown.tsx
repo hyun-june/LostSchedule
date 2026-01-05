@@ -21,14 +21,13 @@ interface Character {
 
 interface HomeworkDropdownProps {
   data: CharData[];
+  setValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const HomeworkDropdown = ({ data }: HomeworkDropdownProps) => {
+const HomeworkDropdown = ({ data, setValue }: HomeworkDropdownProps) => {
   const [sortData, setSortData] = useState<Character[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = useState<string[]>([]);
   const [items, setItems] = useState<ItemType[]>([]);
-  const MAX_COUNT = 6;
   const { roster, setRoster } = useRosterStore();
 
   const sortByItemLevel = (data: Character[]) =>
@@ -49,7 +48,7 @@ const HomeworkDropdown = ({ data }: HomeworkDropdownProps) => {
     if (!sortData?.length) return;
 
     const mappedItems: ItemType[] = sortData.map((char) => {
-      const level = Number(char.ItemAvgLevel.replace(/,/g, "")).toFixed(0);
+      const level = Number(char.ItemAvgLevel.replace(/,/g, ""));
 
       return {
         label: `LV.${level} @${char.CharacterClassName} ${char.CharacterName}`,
@@ -64,10 +63,10 @@ const HomeworkDropdown = ({ data }: HomeworkDropdownProps) => {
     setValue((prev) => {
       const next = select(prev);
 
-      if (next.length > MAX_COUNT) {
-        Alert.alert("최대 6명까지 선택할 수 있어요");
-        return prev;
-      }
+      // if (next.length > MAX_COUNT) {
+      //   Alert.alert("최대 6명까지 선택할 수 있어요");
+      //   return prev;
+      // }
       setRoster(next);
       return next;
     });

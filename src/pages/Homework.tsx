@@ -4,12 +4,13 @@ import HomeworkRaidBox from "../components/HomeworkComp/HomeworkRaidBox";
 import useSearchStore from "../store/useSearchStore";
 import { useGetRoster } from "../hooks/useGetCharacter";
 import useRosterStore from "../store/useRosterStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Homework = () => {
   const { myChar } = useSearchStore();
   const { roster, fetchRoster } = useRosterStore();
-  console.log("🚀 ~ Homework ~ roster:", roster);
+  const [value, setValue] = useState<string[]>([]);
+  // console.log("🚀 ~ Homework ~ value:", value);
 
   // const { data, isLoading } = useGetRoster(myChar);
   const { data, isLoading } = useGetRoster("피엇음");
@@ -18,10 +19,10 @@ const Homework = () => {
   }, []);
   return (
     <View>
-      <HomeworkDropdown data={data} />
+      <HomeworkDropdown data={data} setValue={setValue} />
 
       <ScrollView style={{ padding: 10, marginVertical: 20 }}>
-        <HomeworkRaidBox />
+        <HomeworkRaidBox data={value} />
       </ScrollView>
     </View>
   );
