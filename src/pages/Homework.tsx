@@ -5,24 +5,49 @@ import useSearchStore from "../store/useSearchStore";
 import { useGetRoster } from "../hooks/useGetCharacter";
 import useRosterStore from "../store/useRosterStore";
 import { useEffect, useState } from "react";
+import { toNumberForItemLevel } from "../utils/formatJsonData";
+
+interface Character {
+  ServerName: string;
+  CharacterName: string;
+  CharacterLevel: number;
+  CharacterClassName: string;
+  ItemAvgLevel: string;
+}
 
 const Homework = () => {
   const { myChar } = useSearchStore();
   const { roster, fetchRoster } = useRosterStore();
   const [value, setValue] = useState<string[]>([]);
-  // console.log("🚀 ~ Homework ~ value:", value);
-
   // const { data, isLoading } = useGetRoster(myChar);
   const { data, isLoading } = useGetRoster("피엇음");
   useEffect(() => {
     fetchRoster();
   }, []);
+
+  const [sortData, setSortData] = useState<Character[]>([]);
+
+  const sortByItemLevel = (data: Character[]) => {
+    return [...data].sort(
+      (a, b) =>
+        toNumberForItemLevel(b.ItemAvgLevel) -
+        toNumberForItemLevel(a.ItemAvgLevel)
+    );
+  };
+
+  useEffect(() => {
+    if (!data?.length) return;
+
+    const sorted = sortByItemLevel(data);
+    setSortData(sorted);
+  }, data);
+
   return (
     <View>
-      <HomeworkDropdown data={data} setValue={setValue} />
+      <HomeworkDropdown sortData={sortData} setValue={setValue} />
 
       <ScrollView style={{ padding: 10, marginVertical: 20 }}>
-        <HomeworkRaidBox data={value} />
+        <HomeworkRaidBox data={data} />
       </ScrollView>
     </View>
   );

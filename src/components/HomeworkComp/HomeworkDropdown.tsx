@@ -11,44 +11,21 @@ interface ItemType {
   value: string;
 }
 
-interface Character {
-  ServerName: string;
-  CharacterName: string;
-  CharacterLevel: number;
-  CharacterClassName: string;
-  ItemAvgLevel: string;
-}
-
 interface HomeworkDropdownProps {
-  data: CharData[];
+  sortData: CharData[];
   setValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const HomeworkDropdown = ({ data, setValue }: HomeworkDropdownProps) => {
-  const [sortData, setSortData] = useState<Character[]>([]);
+const HomeworkDropdown = ({ sortData, setValue }: HomeworkDropdownProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<ItemType[]>([]);
   const { roster, setRoster } = useRosterStore();
 
-  const sortByItemLevel = (data: Character[]) =>
-    [...data].sort(
-      (a, b) =>
-        Number(b.ItemAvgLevel.replace(/,/g, "")) -
-        Number(a.ItemAvgLevel.replace(/,/g, ""))
-    );
-
-  useEffect(() => {
-    if (!data?.length) return;
-
-    const sorted = sortByItemLevel(data);
-    setSortData(sorted);
-  }, [data]);
-
   useEffect(() => {
     if (!sortData?.length) return;
 
-    const mappedItems: ItemType[] = sortData.map((char) => {
-      const level = Number(char.ItemAvgLevel.replace(/,/g, ""));
+    const mappedItems: ItemType[] = sortData?.map((char) => {
+      const level = Number(char?.ItemAvgLevel.replace(/,/g, ""));
 
       return {
         label: `LV.${level} @${char.CharacterClassName} ${char.CharacterName}`,

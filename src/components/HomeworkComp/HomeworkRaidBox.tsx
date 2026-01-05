@@ -2,7 +2,6 @@ import { View, Text, StyleSheet } from "react-native";
 import { theme } from "../../theme/theme";
 import HomeworkCharBox from "./HomeworkCharBox";
 import { CharData } from "../../models/charType";
-import { useGetCharacter } from "../../hooks/useGetCharacter";
 
 interface HomeworkRaidBoxProps {
   data: CharData[];
@@ -10,11 +9,8 @@ interface HomeworkRaidBoxProps {
 
 const HomeworkRaidBox = ({ data }) => {
   // console.log("🚀 ~ HomeworkRaidBox ~ data:", data);
-  const charNames = data.map((char) => char.replaceAll("@", ""));
-  console.log("🚀 ~ HomeworkRaidBox ~ charNames:", charNames);
-
-  const { data: charData } = useGetCharacter(charNames[0]);
-  // console.log("🚀 ~ HomeworkRaidBox ~ charData:", charData);
+  // const charNames = data.map((char) => char.replaceAll("@", ""));
+  // console.log("🚀 ~ HomeworkRaidBox ~ charNames:", charNames);
 
   return (
     <View style={styles.HomeContainer}>
