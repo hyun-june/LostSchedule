@@ -8,6 +8,7 @@ import { theme } from "./src/theme/theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTab from "./src/components/BottomTab";
+import Settings from "./src/components/Settings";
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();

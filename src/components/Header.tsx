@@ -22,15 +22,27 @@ const Header = () => {
 
   return (
     <View style={isMain ? styles.mainHeader : styles.subHeader}>
-      <StatusBar style="light" />
-      {route.name !== "Main" ? (
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={{ marginVertical: 10 }}
-        >
-          <Ionicons name="chevron-back-sharp" size={24} color="white" />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <StatusBar style="light" />
+        {route.name !== "Main" ? (
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={{ marginVertical: 10 }}
+          >
+            <Ionicons name="chevron-back-sharp" size={24} color="white" />
+          </Pressable>
+        ) : null}
+        <Pressable onPress={() => console.log("환경설정")}>
+          <Ionicons name="settings" size={24} color="white" />
         </Pressable>
-      ) : null}
+      </View>
+
       <SearchBar text={text} setText={setText} onSearch={onSearch} />
     </View>
   );
