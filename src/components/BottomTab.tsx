@@ -2,16 +2,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Main from "../pages/Main";
 import Character from "../pages/Character";
 import Header from "./Header";
-import { useState } from "react";
-import { Modal, Pressable, View } from "react-native";
-import AddCharacter from "./AddCharacter";
 import useSearchStore from "../store/useSearchStore";
 import { useNavigation } from "@react-navigation/native";
 import Homework from "./../pages/Homework";
+import WeeklyReport from "../pages/WeeklyReport";
 
 const Tab = createBottomTabNavigator();
+
 const BottomTab = () => {
-  const [showModal, setShowModal] = useState(false);
   const { myChar } = useSearchStore();
   const navigation = useNavigation();
 
@@ -30,7 +28,7 @@ const BottomTab = () => {
         <Tab.Screen
           name="Character"
           component={Character}
-          options={{ tabBarLabel: "캐릭터" }}
+          options={{ tabBarLabel: "검색" }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               if (!myChar) {
@@ -46,30 +44,11 @@ const BottomTab = () => {
           options={{ tabBarLabel: "숙제" }}
         />
         <Tab.Screen
-          name="AddChar"
-          component={View}
-          options={{ tabBarLabel: "등록" }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              setShowModal((prev) => !prev);
-            },
-          }}
+          name="WeeklyReport"
+          component={WeeklyReport}
+          options={{ tabBarLabel: "주간 레이드" }}
         />
       </Tab.Navigator>
-      <Modal visible={showModal} transparent animationType="slide">
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => setShowModal(false)}
-        >
-          <AddCharacter onClose={() => setShowModal(false)} />
-        </Pressable>
-      </Modal>
     </>
   );
 };

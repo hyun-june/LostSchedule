@@ -1,54 +1,41 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import EquipmentBox from "./EquipmentBox";
+import { theme } from "../../theme/theme";
 import {
   cleanText,
   getFirstNumber,
-  getLastNumber,
   jsonFormatter,
 } from "../../utils/formatJsonData";
+import { useEffect, useState } from "react";
 
 const EquipmentItem = ({ ...props }) => {
+  const [advancedLevel, setAdvancedLevel] = useState("");
   const { data } = props;
 
   const formatData = jsonFormatter(data?.Tooltip);
-  // console.log("🚀 ~ EquipmentItem ~ formatData:", formatData);
 
   // 품질
   const qualityValue = formatData?.Element_001?.value?.qualityValue;
 
   // 상급재련
-  const advancedLevel = getFirstNumber(
-    cleanText(formatData?.Element_005?.value)
-  );
+  useEffect(() => {
+    if (formatData?.Element_005?.type === "SingleTextBox") {
+      const advancedLevelText = getFirstNumber(
+        cleanText(formatData?.Element_005?.value)
+      );
 
-  // 초월
-  const transcend = getLastNumber(
-    cleanText(formatData?.Element_010?.value?.Element_000?.topStr)
-  );
+      setAdvancedLevel(advancedLevelText || "");
+    }
+  }, [data]);
+
+  const selectColor =
+    qualityValue === 100 ? "gold" : qualityValue >= 90 ? "purple" : "blue";
 
   return (
     <View style={{ flexDirection: "row", gap: 5 }}>
-      <EquipmentBox
-        {...props}
-        data={data}
-        qualityValue={qualityValue}
-        transcend={transcend}
-      />
-      <View style={{ gap: 2 }}>
-        <View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Image
-              style={{
-                width: 15,
-                height: 15,
-                left: 3,
-              }}
-              source={{
-                uri: "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/game/ico_tooltip_transcendence.png",
-              }}
-            />
-            <Text style={{ color: "white", fontSize: 8 }}>{transcend}</Text>
-          </View>
+      <EquipmentBox {...props} data={data} />
+      <View style={{ justifyContent: "center" }}>
+        <View style={{ gap: 3 }}>
           <Text
             style={{
               ...styles.textBox,
@@ -56,17 +43,22 @@ const EquipmentItem = ({ ...props }) => {
               color: "#FFE940",
             }}
           >
-            {data?.Name} x{advancedLevel}
+            {data?.Name} {advancedLevel ? `x${advancedLevel}` : ""}
           </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-          }}
-        >
-          <Text style={styles.textBox}>공격력 LV5</Text>
-          <Text style={styles.textBox}>무기 공격력 LV5</Text>
+          {qualityValue >= 0 && (
+            <View style={[styles.quality, styles[selectColor]]}>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 10,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                {qualityValue}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -80,4 +72,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 8,
   },
+  quality: {
+    width: 25,
+  },
+  blue: theme.box.blue,
+  purple: theme.box.purple,
+  gold: theme.box.gold,
 });

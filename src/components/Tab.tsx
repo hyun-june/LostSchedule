@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { theme } from "../theme/theme";
-import CharacterForm from "./CharacterForm";
 import CharEquipment from "./CharacterFormComp/CharEquipment";
 import { CharAllData } from "./../models/charType";
 
@@ -10,7 +9,6 @@ interface TabDataType {
 }
 
 const Tab = ({ data }: TabDataType) => {
-  // console.log("🚀 ~ Tab ~ data:", data);
   const [currentTab, setCurrentTab] = useState<number>(0);
 
   const headerList = [

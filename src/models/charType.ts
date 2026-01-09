@@ -43,7 +43,7 @@ export interface CharData {
 
 export interface CharFormProps {
   charProfile: CharData;
-  classEngraving: string;
+  classEngraving?: string;
 }
 
 export interface CharInfoProps {
