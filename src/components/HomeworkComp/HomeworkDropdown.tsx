@@ -5,6 +5,8 @@ import DropDownPicker, {
 } from "react-native-dropdown-picker";
 import { CharData } from "../../models/charType";
 import useRosterStore from "../../store/useRosterStore";
+import Entypo from "@expo/vector-icons/Entypo";
+import CustomDropDown from "../CustomDropDown";
 
 interface ItemType {
   label: string;
@@ -29,7 +31,7 @@ const HomeworkDropdown = ({ sortData, setValue }: HomeworkDropdownProps) => {
 
       return {
         label: `LV.${level} @${char.CharacterClassName} ${char.CharacterName}`,
-        value: `@${char.CharacterName}`,
+        value: char.CharacterName,
       };
     });
 
@@ -39,11 +41,6 @@ const HomeworkDropdown = ({ sortData, setValue }: HomeworkDropdownProps) => {
   const handleSetValue: DropDownPickerProps<string>["setValue"] = (select) => {
     setValue((prev) => {
       const next = select(prev);
-
-      // if (next.length > MAX_COUNT) {
-      //   Alert.alert("최대 6명까지 선택할 수 있어요");
-      //   return prev;
-      // }
       setRoster(next);
       return next;
     });
@@ -67,25 +64,22 @@ const HomeworkDropdown = ({ sortData, setValue }: HomeworkDropdownProps) => {
         listItemContainerStyle={styles.listItemContainer}
         listItemLabelStyle={styles.listItemLabel}
         selectedItemLabelStyle={styles.selectedItemLabel}
-        // arrowColor="white"
-        arrowIconStyle={{
-          width: 20,
-          height: 20,
-          // tintColor: "white",
-        }}
-        renderBadgeItem={(item) => (
-          <View
-            style={{
-              backgroundColor: "gray",
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderRadius: 12,
-            }}
-          >
-            <Text style={{ color: "#fff" }}>{item.value}</Text>
-          </View>
+        ArrowDownIconComponent={() => (
+          <Entypo name="chevron-down" size={24} color="white" />
         )}
+        renderBadgeItem={(props) => {
+          const last = roster[roster.length - 1];
+          if (props.value !== last) return null;
+          const label = items.find((i) => i.value === last)?.label;
+
+          return (
+            <View>
+              <Text style={styles.textStyle}>{label}</Text>
+            </View>
+          );
+        }}
       />
+      <CustomDropDown />
     </View>
   );
 };
@@ -95,8 +89,6 @@ export default HomeworkDropdown;
 const styles = StyleSheet.create({
   box: {
     marginVertical: 30,
-    flex: 1,
-    padding: 10,
   },
   dropdown: {
     borderColor: "white",
@@ -106,7 +98,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textStyle: {
-    color: "black",
+    color: "white",
     fontSize: 16,
   },
   listItemContainer: {
