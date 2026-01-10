@@ -18,7 +18,7 @@ interface Character {
 const Homework = () => {
   const { myChar } = useSearchStore();
   const { roster, fetchRoster } = useRosterStore();
-  const [value, setValue] = useState<string[]>([]);
+
   // const { data, isLoading } = useGetRoster(myChar);
   const { data, isLoading } = useGetRoster("피엇음");
   useEffect(() => {
@@ -44,9 +44,9 @@ const Homework = () => {
 
   return (
     <View>
-      <HomeworkDropdown sortData={sortData} setValue={setValue} />
+      <HomeworkDropdown sortData={sortData} />
 
-      <ScrollView style={{ padding: 10, marginVertical: 20 }}>
+      <ScrollView style={{ paddingHorizontal: 10 }}>
         <HomeworkRaidBox data={data} />
       </ScrollView>
     </View>

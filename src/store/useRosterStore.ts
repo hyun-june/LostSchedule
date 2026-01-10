@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 interface RosterState {
   roster: string[];
-  setRoster: (values: string[]) => Promise<void>;
+  setRoster: (values: string) => Promise<void>;
   fetchRoster: () => Promise<void>;
 }
 
@@ -12,14 +12,19 @@ const STORAGE_KEY = "roster";
 const useRosterStore = create<RosterState>((set) => {
   return {
     roster: [],
-    setRoster: async (values) => {
-      set({ roster: values });
+    setRoster: async (value: string) => {
+      set((state) => {
+        let next: string[];
 
-      try {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(values));
-      } catch (error) {
-        console.error("roster 저장 실패", error);
-      }
+        if (state.roster.includes(value)) {
+          next = state.roster.filter((v) => v !== value);
+        } else {
+          next = [...state.roster, value];
+        }
+
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        return { roster: next };
+      });
     },
     fetchRoster: async () => {
       try {
