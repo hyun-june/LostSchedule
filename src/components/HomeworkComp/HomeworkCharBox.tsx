@@ -7,33 +7,55 @@ import {
   Pressable,
 } from "react-native";
 import Checkbox from "expo-checkbox";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import GoldIcon from "../GoldIcon";
 import { raidData } from "./../../utils/raidData";
+import { theme } from "../../theme/theme";
 
-const HomeworkCharBox = () => {
+const HomeworkCharBox = ({ ...props }) => {
+  const { char } = props;
+  if (!char) return null;
+  const { CharacterImage, CharacterClassName, CharacterName, ItemAvgLevel } =
+    char;
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [moreActive, setMoreActive] = useState<Record<string, boolean>>({});
-  const [selectedDifficulty, setSelectedDifficulty] = useState<
-    Record<string, string>
-  >(
-    Object.fromEntries(
-      raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
-    )
+  const [goldSelect, setGoldSelect] = useState<Record<string, boolean>>({});
+
+  const raidDifficulty = Object.fromEntries(
+    raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
   );
-  const raidDatas = raidData;
-  // console.log("🚀 ~ HomeworkCharBox ~ raidDatas:", raidDatas);
-  // const level = 1720;
+
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<Record<string, string>>(raidDifficulty);
+
+  const totalGoldForChar = raidData.reduce((sum, raid) => {
+    const stage = raid.stages.find(
+      (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+    );
+
+    if (!stage) return sum;
+
+    const checkKey = `${raid.raidKey}-${stage.difficulty}`;
+
+    // 이 캐릭터에서 체크 안했으면 스킵
+    // if (!checked[checkKey]) return sum;
+
+    // 선택된 실제 골드 값
+    const goldValue = moreActive[raid.raidKey]
+      ? (stage.gold ?? 0) - (stage.more ?? 0)
+      : stage.gold ?? 0;
+
+    // 골드 받기 선택 안하면 0 처리
+    if (!goldSelect[raid.raidKey]) return sum;
+
+    return sum + goldValue;
+  }, 0);
 
   const DIFFICULTY_LABEL = {
     normal: "노말",
     hard: "하드",
     nightmare: "나메",
   };
-
-  // const filterRaid = raidDatas
-  //   .filter((raid) => raid.level < level)
-  //   .sort((a, b) => b.level - a.level);
 
   const handleMore = (raid) => {
     setMoreActive((prev) => ({
@@ -49,15 +71,36 @@ const HomeworkCharBox = () => {
     }));
   };
 
+  const selectGold = (raid) => {
+    setGoldSelect((prev) => {
+      const isSelected = prev[raid.raidKey];
+      const selectedCount = Object.values(prev).filter((v) => v).length;
+
+      if (isSelected) {
+        return { ...prev, [raid.raidKey]: false };
+      }
+
+      if (selectedCount >= 3) {
+        alert("골드는 최대 3개 레이드까지만 받을 수 있어요!");
+        return prev;
+      }
+
+      return { ...prev, [raid.raidKey]: true };
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.charHead}>
-        <Image
-          style={styles.char}
-          source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrBaC4yps_AgnQ3QfZqHFP5cinHlhKxCBhSg&s",
-          }}
-        ></Image>
+        <View style={styles.charImageBox}>
+          <Image
+            style={styles.charImage}
+            source={{
+              uri: CharacterImage,
+            }}
+          />
+        </View>
+
         <View
           style={{
             flexDirection: "row",
@@ -68,11 +111,13 @@ const HomeworkCharBox = () => {
           }}
         >
           <View>
-            <Text style={styles.text}>LV.1720 발키리</Text>
-            <Text style={styles.text}>열두글자열두글자열두글자</Text>
+            <Text style={styles.text}>
+              {`Lv. ${ItemAvgLevel}`} {CharacterClassName}
+            </Text>
+            <Text style={styles.text}>{CharacterName}</Text>
           </View>
           <View>
-            <Text style={styles.text}>120,000</Text>
+            <Text style={styles.text}>{totalGoldForChar.toLocaleString()}</Text>
           </View>
         </View>
       </View>
@@ -106,60 +151,85 @@ const HomeworkCharBox = () => {
                   color={"gray"}
                 />
               </View>
-              {/* 제목 */}
-              <View style={{ flex: 5, flexDirection: "row", gap: 5 }}>
-                <Text style={styles.raidInnerText}>
-                  {raid.title}({DIFFICULTY_LABEL[stage?.difficulty]})
-                </Text>
-                <Text style={styles.raidInnerText}>
-                  {/* 1~{raid.phases}관문 */}
-                  {/* • {selectedStage?.level} 레벨 이상 */}
-                </Text>
-              </View>
-              {/* 골드 */}
-              <View style={styles.goldIcon}>
-                <Text style={styles.raidInnerText}>
-                  {goldValue?.toLocaleString()}
-                </Text>
-                <GoldIcon />
-              </View>
-              {/* 난이도 선택 */}
-              <View style={{ flexDirection: "row" }}>
-                {raid.stages.map((stage) => (
-                  <Pressable
-                    key={stage.difficulty}
-                    style={[
-                      styles.diffButton,
-                      selectedDifficulty[raid.raidKey] === stage.difficulty &&
-                        styles.diffActive,
-                    ]}
-                    onPress={() =>
-                      setSelectedDifficulty((prev) => ({
-                        ...prev,
-                        [raid.raidKey]: stage.difficulty,
-                      }))
-                    }
-                  >
-                    <Text style={styles.raidInnerText}>
-                      {DIFFICULTY_LABEL[stage.difficulty]}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-              {/* 더보기 */}
-              <Pressable style={styles.moreBtn}>
-                <Text
-                  style={[
-                    styles.raidInnerText,
-                    moreActive[raid.raidKey] && styles.textActive,
-                  ]}
-                  onPress={() => {
-                    handleMore(raid);
+              <View
+                style={{
+                  flex: 1,
+                  gap: 3,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                   }}
                 >
-                  더보기
-                </Text>
-              </Pressable>
+                  {/* 제목 */}
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.raidHeadText}>
+                      {raid.title}({DIFFICULTY_LABEL[stage?.difficulty]})
+                    </Text>
+                  </View>
+                  {/* 골드 */}
+                  <Pressable
+                    style={styles.goldIcon}
+                    onPress={() => selectGold(raid)}
+                  >
+                    <Text
+                      style={[
+                        { color: "gray" },
+                        goldSelect[raid.raidKey] && styles.textActive,
+                      ]}
+                    >
+                      {goldValue?.toLocaleString()}
+                    </Text>
+                    <GoldIcon />
+                  </Pressable>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* 난이도 선택 */}
+                  <View style={{ flexDirection: "row" }}>
+                    {raid.stages.map((stage) => (
+                      <Pressable
+                        key={stage.difficulty}
+                        style={[
+                          styles.diffButton,
+                          selectedDifficulty[raid.raidKey] ===
+                            stage.difficulty && styles.diffActive,
+                        ]}
+                        onPress={() =>
+                          setSelectedDifficulty((prev) => ({
+                            ...prev,
+                            [raid.raidKey]: stage.difficulty,
+                          }))
+                        }
+                      >
+                        <Text style={[styles.raidInnerText]}>
+                          {DIFFICULTY_LABEL[stage.difficulty]}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                  {/* 더보기 */}
+                  <Pressable style={styles.moreBtn}>
+                    <Text
+                      style={[
+                        { color: "gray" },
+                        moreActive[raid.raidKey] && styles.textActive,
+                      ]}
+                      onPress={() => {
+                        handleMore(raid);
+                      }}
+                    >
+                      더보기
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
             </Pressable>
           );
         })}
@@ -173,17 +243,29 @@ export default HomeworkCharBox;
 const styles = StyleSheet.create({
   container: {
     gap: 5,
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 5,
+    padding: 5,
+    marginBottom: 20,
   },
   charHead: {
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
   },
-  char: {
+  charImageBox: {
     width: 40,
     height: 40,
     borderWidth: 1,
     borderRadius: 25,
+    borderColor: "white",
+    overflow: "hidden",
+  },
+  charImage: {
+    resizeMode: "cover",
+    width: "100%",
+    height: "100%",
   },
   raid: {
     borderColor: "gray",
@@ -202,6 +284,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  raidHeadText: {
+    fontWeight: "bold",
+    color: "white",
+    fontSize: 14,
+  },
   text: {
     color: "white",
   },
@@ -217,9 +304,11 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     padding: 2,
+    flexDirection: "row",
+    alignItems: "center",
   },
   textActive: {
-    color: "gray",
+    color: "white",
   },
   diffButton: {
     padding: 5,
@@ -231,7 +320,7 @@ const styles = StyleSheet.create({
   },
 
   diffActive: {
-    backgroundColor: "#ffc300",
     borderColor: "#ffc300",
+    borderWidth: 1,
   },
 });

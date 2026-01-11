@@ -31,11 +31,18 @@ export const useGetCharacterProfile = (roster: string[]) => {
       queryKey: ["CharProfile", id],
       queryFn: () => getCharacterProfile(id),
       enabled: !!id,
+      staleTime: 1000 * 60,
+      gcTime: 1000 * 60 * 5,
     })),
   });
 
   const data = queries.map((q) => q.data);
-  const isLoading = queries.some((q) => q.isLoading);
+
+  const isInitialLoading =
+    data.every((d) => !d) && queries.some((q) => q.isLoading);
+
+  const isFetching = queries.some((q) => q.isFetching);
   const isError = queries.some((q) => q.isError);
-  return { data, isLoading, isError };
+
+  return { data, isInitialLoading, isFetching, isError };
 };

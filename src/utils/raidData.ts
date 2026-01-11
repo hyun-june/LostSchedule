@@ -6,7 +6,7 @@ interface RaidGroup {
 }
 
 interface RaidStages {
-  difficulty: "normal" | "hard" | "the first" | "nightmare";
+  difficulty: "normal" | "hard" | "nightmare";
   level: number;
   gold: number;
   more: number;

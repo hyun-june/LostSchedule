@@ -4,29 +4,46 @@ import HomeworkCharBox from "./HomeworkCharBox";
 import { CharData } from "../../models/charType";
 import useRosterStore from "../../store/useRosterStore";
 import { useGetCharacterProfile } from "../../hooks/useGetCharacter";
-import { useEffect } from "react";
 
 interface HomeworkRaidBoxProps {
   data: CharData[];
 }
 
 const HomeworkRaidBox = () => {
-  // console.log("🚀 ~ HomeworkRaidBox ~ data:", data);
-  // const charNames = data.map((char) => char.replaceAll("@", ""));
-  // console.log("🚀 ~ HomeworkRaidBox ~ charNames:", charNames);
   const { roster } = useRosterStore();
-  const { data, isLoading, isError } = useGetCharacterProfile(roster);
+  const { data, isInitialLoading, isFetching, isError } =
+    useGetCharacterProfile(roster);
 
-  console.log("🚀 ~ HomeworkRaidBox ~ data:", data);
+  const sortData = data.sort(
+    (a, b) =>
+      parseFloat(b.ItemAvgLevel.replace(/,/g, "")) -
+      parseFloat(a.ItemAvgLevel.replace(/,/g, ""))
+  );
 
-  return (
-    <View style={styles.HomeContainer}>
-      <View style={styles.total}>
-        <Text style={styles.Text}>TOTAL</Text>
-        <Text style={styles.Text}>420,000</Text>
+  if (isInitialLoading) {
+    return (
+      <View>
+        <Text>불러오는 중...</Text>
       </View>
-
-      <HomeworkCharBox />
+    );
+  }
+  if (isError) {
+    return (
+      <View>
+        <Text style={styles.Text}>데이터를 불러오지 못했어요 😥</Text>
+      </View>
+    );
+  }
+  return (
+    <View>
+      <View style={styles.total}>
+        <Text style={styles.text}>TOTAL</Text>
+        <Text style={styles.text}>420,000</Text>
+      </View>
+      {isFetching && <Text>업데이트 중...</Text>}
+      {sortData?.map((char) => (
+        <HomeworkCharBox key={char?.CharacterName} char={char} />
+      ))}
     </View>
   );
 };
@@ -34,26 +51,17 @@ const HomeworkRaidBox = () => {
 export default HomeworkRaidBox;
 
 const styles = StyleSheet.create({
-  HomeContainer: {},
   total: {
     borderBottomWidth: 2,
-    borderColor: "white",
+    borderColor: theme.line.mint,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
     paddingVertical: 5,
     paddingRight: 5,
   },
-  Char: {
-    borderColor: theme.line.mint,
-    borderWidth: 1,
-    borderRadius: 10,
-    width: 120,
-    height: 70,
-    padding: 10,
-  },
 
-  Text: {
+  text: {
     color: "white",
   },
 });
