@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
   },
   dropdownListItem: {
-    paddingVertical: 5,
-    marginVertical: 4,
+    paddingVertical: 10,
+
     borderBottomWidth: 1,
     borderColor: "gray",
     paddingHorizontal: 10,
