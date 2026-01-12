@@ -7,10 +7,10 @@ import {
   Pressable,
 } from "react-native";
 import Checkbox from "expo-checkbox";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import GoldIcon from "../GoldIcon";
 import { raidData } from "./../../utils/raidData";
-import { theme } from "../../theme/theme";
+import useHomeworkStore from "../../store/useHomeworkStore";
 
 const HomeworkCharBox = ({ ...props }) => {
   const { char } = props;
@@ -20,6 +20,7 @@ const HomeworkCharBox = ({ ...props }) => {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [moreActive, setMoreActive] = useState<Record<string, boolean>>({});
   const [goldSelect, setGoldSelect] = useState<Record<string, boolean>>({});
+  const { setCharGold } = useHomeworkStore();
 
   const raidDifficulty = Object.fromEntries(
     raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
@@ -35,7 +36,7 @@ const HomeworkCharBox = ({ ...props }) => {
 
     if (!stage) return sum;
 
-    const checkKey = `${raid.raidKey}-${stage.difficulty}`;
+    // const checkKey = `${raid.raidKey}-${stage.difficulty}`;
 
     // 이 캐릭터에서 체크 안했으면 스킵
     // if (!checked[checkKey]) return sum;
@@ -50,6 +51,10 @@ const HomeworkCharBox = ({ ...props }) => {
 
     return sum + goldValue;
   }, 0);
+
+  useEffect(() => {
+    setCharGold(CharacterName, totalGoldForChar);
+  }, [totalGoldForChar]);
 
   const DIFFICULTY_LABEL = {
     normal: "노말",
@@ -116,8 +121,9 @@ const HomeworkCharBox = ({ ...props }) => {
             </Text>
             <Text style={styles.text}>{CharacterName}</Text>
           </View>
-          <View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
             <Text style={styles.text}>{totalGoldForChar.toLocaleString()}</Text>
+            <GoldIcon />
           </View>
         </View>
       </View>
@@ -180,9 +186,8 @@ const HomeworkCharBox = ({ ...props }) => {
                         goldSelect[raid.raidKey] && styles.textActive,
                       ]}
                     >
-                      {goldValue?.toLocaleString()}
+                      {`${goldValue?.toLocaleString()}G`}
                     </Text>
-                    <GoldIcon />
                   </Pressable>
                 </View>
                 <View
