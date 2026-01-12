@@ -17,10 +17,10 @@ const HomeworkCharBox = ({ ...props }) => {
   if (!char) return null;
   const { CharacterImage, CharacterClassName, CharacterName, ItemAvgLevel } =
     char;
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [moreActive, setMoreActive] = useState<Record<string, boolean>>({});
   const [goldSelect, setGoldSelect] = useState<Record<string, boolean>>({});
-  const { setCharGold } = useHomeworkStore();
+
+  const { charGold, setCharGold, checked, setChecked } = useHomeworkStore();
 
   const raidDifficulty = Object.fromEntries(
     raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
@@ -29,32 +29,58 @@ const HomeworkCharBox = ({ ...props }) => {
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Record<string, string>>(raidDifficulty);
 
-  const totalGoldForChar = raidData.reduce((sum, raid) => {
-    const stage = raid.stages.find(
-      (s) => s.difficulty === selectedDifficulty[raid.raidKey]
-    );
+  const getGoldValue = (raid) => {
+    const stage =
+      raid.stages.find(
+        (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+      ) || raid.stages[0];
 
-    if (!stage) return sum;
+    if (!stage) return 0;
 
-    // const checkKey = `${raid.raidKey}-${stage.difficulty}`;
+    const gold = stage?.gold ?? 0;
+    const more = stage?.more ?? 0;
 
-    // 이 캐릭터에서 체크 안했으면 스킵
-    // if (!checked[checkKey]) return sum;
+    // 골드 선택 O
+    if (goldSelect[raid.raidKey]) {
+      return moreActive[raid.raidKey] ? gold - more : gold;
+    }
 
-    // 선택된 실제 골드 값
-    const goldValue = moreActive[raid.raidKey]
-      ? (stage.gold ?? 0) - (stage.more ?? 0)
-      : stage.gold ?? 0;
+    // 골드 선택 X + 더보기 O → -more
+    if (moreActive[raid.raidKey]) {
+      return -more;
+    }
 
-    // 골드 받기 선택 안하면 0 처리
-    if (!goldSelect[raid.raidKey]) return sum;
+    return 0;
+  };
 
-    return sum + goldValue;
-  }, 0);
+  const totalGoldForChar = raidData.reduce(
+    (sum, raid) => sum + getGoldValue(raid),
+    0
+  );
 
   useEffect(() => {
     setCharGold(CharacterName, totalGoldForChar);
   }, [totalGoldForChar]);
+
+  useEffect(() => {
+    const checkedChar = checked[CharacterName];
+    if (!checkedChar) return;
+    Object.keys(checkedChar).forEach((title) => {
+      const raid = raidData.find((r) => r.title === title);
+      if (!raid) return;
+
+      const stage = raid.stages.find(
+        (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+      );
+
+      setChecked(CharacterName, title, {
+        ...checkedChar[title],
+        difficulty: stage?.difficulty,
+        more: moreActive[raid.raidKey] ?? false,
+        gold: goldSelect[raid.raidKey] ?? false,
+      });
+    });
+  }, [selectedDifficulty, goldSelect, moreActive]);
 
   const DIFFICULTY_LABEL = {
     normal: "노말",
@@ -69,11 +95,22 @@ const HomeworkCharBox = ({ ...props }) => {
     }));
   };
 
-  const toggleCheck = (id: string) => {
-    setChecked((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const toggleCheck = (CharacterName, raid, value) => {
+    const { title, stages, raidKey } = raid;
+
+    const currentStage = stages.find(
+      (stage) => stage.difficulty === selectedDifficulty[raidKey]
+    );
+
+    if (!value) {
+      setChecked(CharacterName, title, undefined);
+      return;
+    }
+    setChecked(CharacterName, title, {
+      difficulty: currentStage?.difficulty,
+      gold: goldSelect[raidKey] ?? false,
+      more: moreActive[raidKey] ?? false,
+    });
   };
 
   const selectGold = (raid) => {
@@ -132,7 +169,6 @@ const HomeworkCharBox = ({ ...props }) => {
           const stage = raid.stages.find(
             (s) => s.difficulty === selectedDifficulty[raid.raidKey]
           );
-          const checkKey = `${raid.raidKey}-${stage?.difficulty}`;
 
           const goldValue = moreActive[raid.raidKey]
             ? (stage?.gold ?? 0) - (stage?.more ?? 0)
@@ -142,17 +178,20 @@ const HomeworkCharBox = ({ ...props }) => {
             <Pressable
               key={raid.raidKey}
               style={styles.raidInner}
-              onPress={() => toggleCheck(checkKey)}
+              onPress={() =>
+                toggleCheck(
+                  CharacterName,
+                  raid,
+                  !checked[CharacterName]?.[raid.title]
+                )
+              }
             >
               {/* 체크박스 */}
               <View style={{ marginRight: 3 }}>
                 <Checkbox
-                  value={!!checked[checkKey]}
+                  value={!!checked[CharacterName]?.[raid.title]}
                   onValueChange={(value) =>
-                    setChecked((prev) => ({
-                      ...prev,
-                      [checkKey]: value,
-                    }))
+                    toggleCheck(CharacterName, raid, value)
                   }
                   color={"gray"}
                 />
@@ -177,7 +216,7 @@ const HomeworkCharBox = ({ ...props }) => {
                   </View>
                   {/* 골드 */}
                   <Pressable
-                    style={styles.goldIcon}
+                    style={styles.charGold}
                     onPress={() => selectGold(raid)}
                   >
                     <Text
@@ -186,7 +225,7 @@ const HomeworkCharBox = ({ ...props }) => {
                         goldSelect[raid.raidKey] && styles.textActive,
                       ]}
                     >
-                      {`${goldValue?.toLocaleString()}G`}
+                      {`${(goldValue ?? 0).toLocaleString()}G`}
                     </Text>
                   </Pressable>
                 </View>
@@ -301,7 +340,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "white",
   },
-  goldIcon: {
+  charGold: {
     flexDirection: "row",
     alignItems: "center",
   },

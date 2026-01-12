@@ -63,9 +63,9 @@ const CharCard = ({ charProfile, classEngraving }: CharFormProps) => {
               LV.{charProfile?.CharacterLevel} {charProfile?.CharacterName}
             </Text>
             <View style={{ marginBottom: 5 }}>
-              {infoData?.map(({ label, data }) => (
-                <CharInfo label={label} data={data} />
-              ))}
+              {infoData?.map(({ label, data }) => {
+                return <CharInfo label={label} data={data} key={label} />;
+              })}
             </View>
 
             <View style={styles.iconWrapper}>

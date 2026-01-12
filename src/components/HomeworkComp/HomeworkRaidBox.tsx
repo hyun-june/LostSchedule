@@ -5,7 +5,7 @@ import { CharData } from "../../models/charType";
 import useRosterStore from "../../store/useRosterStore";
 import { useGetCharacterProfile } from "../../hooks/useGetCharacter";
 import GoldIcon from "./../GoldIcon";
-import useRaidStore from "../../store/useHomeworkStore";
+import useHomeworkStore from "../../store/useHomeworkStore";
 
 interface HomeworkRaidBoxProps {
   data: CharData[];
@@ -16,7 +16,7 @@ const HomeworkRaidBox = () => {
   const { data, isInitialLoading, isFetching, isError } =
     useGetCharacterProfile(roster);
 
-  const { charGold } = useRaidStore();
+  const { charGold } = useHomeworkStore();
   const totalAllGold = Object.values(charGold).reduce((sum, v) => sum + v, 0);
 
   const sortData = data.sort(
@@ -43,7 +43,7 @@ const HomeworkRaidBox = () => {
     <View>
       <View style={styles.total}>
         <Text style={styles.text}>TOTAL</Text>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Text style={styles.text}>{totalAllGold?.toLocaleString()}</Text>
           <GoldIcon />
         </View>
