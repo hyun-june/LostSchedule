@@ -19,7 +19,7 @@ const HomeworkDropdown = ({ sortData }: HomeworkDropdownProps) => {
     if (!sortData?.length) return;
 
     const mappedItems: ItemType[] = sortData?.map((char) => {
-      const level = Number(char?.ItemAvgLevel.replace(/,/g, ""));
+      const level = Number(char?.ItemAvgLevel?.replace(/,/g, ""));
 
       return {
         label: `LV.${level} @${char.CharacterClassName} ${char.CharacterName}`,

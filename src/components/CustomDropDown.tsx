@@ -13,7 +13,7 @@ const CustomDropDown = ({ list }) => {
   const lastLabel =
     roster.length === 0
       ? placeholder
-      : list.find((item) => item.value === roster[roster.length - 1])?.label;
+      : list?.find((item) => item.value === roster[roster.length - 1])?.label;
 
   const openDropDown = () => {
     setOpen((prev) => !prev);

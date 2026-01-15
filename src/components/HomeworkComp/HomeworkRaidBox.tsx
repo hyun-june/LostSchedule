@@ -21,8 +21,8 @@ const HomeworkRaidBox = () => {
 
   const sortData = data.sort(
     (a, b) =>
-      parseFloat(b.ItemAvgLevel.replace(/,/g, "")) -
-      parseFloat(a.ItemAvgLevel.replace(/,/g, ""))
+      parseFloat(b?.ItemAvgLevel?.replace(/,/g, "")) -
+      parseFloat(a?.ItemAvgLevel?.replace(/,/g, ""))
   );
 
   if (isInitialLoading) {
