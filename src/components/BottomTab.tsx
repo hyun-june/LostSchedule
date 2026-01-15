@@ -28,7 +28,7 @@ const BottomTab = () => {
         <Tab.Screen
           name="Character"
           component={Character}
-          options={{ tabBarLabel: "검색" }}
+          options={{ tabBarLabel: "캐릭터" }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               if (!myChar) {

@@ -19,8 +19,8 @@ const Homework = () => {
   const { myChar } = useSearchStore();
   const { roster, fetchRoster } = useRosterStore();
 
-  // const { data, isLoading } = useGetRoster(myChar);
-  const { data, isLoading } = useGetRoster("피엇음");
+  const { data, isLoading } = useGetRoster(myChar);
+
   useEffect(() => {
     fetchRoster();
   }, []);

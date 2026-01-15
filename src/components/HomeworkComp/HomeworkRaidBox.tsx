@@ -16,10 +16,9 @@ const HomeworkRaidBox = () => {
   const { data, isInitialLoading, isFetching, isError } =
     useGetCharacterProfile(roster);
 
-  const { charGold } = useHomeworkStore();
-  const totalAllGold = Object.values(charGold).reduce((sum, v) => sum + v, 0);
+  const { totalGold } = useHomeworkStore();
 
-  const sortData = data.sort(
+  const sortData = [...(data ?? [])].sort(
     (a, b) =>
       parseFloat(b?.ItemAvgLevel?.replace(/,/g, "")) -
       parseFloat(a?.ItemAvgLevel?.replace(/,/g, ""))
@@ -40,17 +39,20 @@ const HomeworkRaidBox = () => {
     );
   }
   return (
-    <View>
+    <View style={{ paddingBottom: 100 }}>
       <View style={styles.total}>
         <Text style={styles.text}>TOTAL</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-          <Text style={styles.text}>{totalAllGold?.toLocaleString()}</Text>
+          <Text style={styles.text}>{totalGold?.toLocaleString()}</Text>
           <GoldIcon />
         </View>
       </View>
       {isFetching && <Text>업데이트 중...</Text>}
-      {sortData?.map((char) => (
-        <HomeworkCharBox key={char?.CharacterName} char={char} />
+      {sortData?.map((char, idx) => (
+        <HomeworkCharBox
+          key={char?.CharacterName ?? `temp-${idx}`}
+          char={char}
+        />
       ))}
     </View>
   );

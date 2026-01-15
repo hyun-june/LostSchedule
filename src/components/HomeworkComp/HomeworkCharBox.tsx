@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import GoldIcon from "../GoldIcon";
 import { raidData } from "./../../utils/raidData";
 import useHomeworkStore from "../../store/useHomeworkStore";
+import { DIFFICULTY_LABEL } from "../../utils/difficultyLabel";
 
 const HomeworkCharBox = ({ ...props }) => {
   const { char } = props;
@@ -20,7 +21,7 @@ const HomeworkCharBox = ({ ...props }) => {
   const [moreActive, setMoreActive] = useState<Record<string, boolean>>({});
   const [goldSelect, setGoldSelect] = useState<Record<string, boolean>>({});
 
-  const { charGold, setCharGold, checked, setChecked } = useHomeworkStore();
+  const { setCharGold, checked, setChecked } = useHomeworkStore();
 
   const raidDifficulty = Object.fromEntries(
     raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
@@ -82,17 +83,18 @@ const HomeworkCharBox = ({ ...props }) => {
     });
   }, [selectedDifficulty, goldSelect, moreActive]);
 
-  const DIFFICULTY_LABEL = {
-    normal: "노말",
-    hard: "하드",
-    nightmare: "나메",
-  };
-
   const handleMore = (raid) => {
-    setMoreActive((prev) => ({
-      ...prev,
-      [raid.raidKey]: !prev[raid.raidKey],
-    }));
+    setMoreActive((prev) => {
+      const next = {
+        ...prev,
+        [raid.raidKey]: !prev[raid.raidKey],
+      };
+
+      const shouldCheck = next[raid.raidKey] || goldSelect[raid.raidKey];
+      toggleCheck(CharacterName, raid, shouldCheck);
+
+      return next;
+    });
   };
 
   const toggleCheck = (CharacterName, raid, value) => {
@@ -126,6 +128,13 @@ const HomeworkCharBox = ({ ...props }) => {
         alert("골드는 최대 3개 레이드까지만 받을 수 있어요!");
         return prev;
       }
+      const next = {
+        ...prev,
+        [raid.raidKey]: !prev[raid.raidKey],
+      };
+
+      const shouldCheck = next[raid.raidKey] || moreActive[raid.raidKey];
+      toggleCheck(CharacterName, raid, shouldCheck);
 
       return { ...prev, [raid.raidKey]: true };
     });

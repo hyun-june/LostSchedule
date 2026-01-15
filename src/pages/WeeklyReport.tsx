@@ -1,60 +1,137 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import useHomeworkStore from "../store/useHomeworkStore";
+import { raidData } from "./../utils/raidData";
+import { DIFFICULTY_LABEL } from "../utils/difficultyLabel";
 
 const WeeklyReport = () => {
   const { checked, charGold, totalGold } = useHomeworkStore();
 
-  const weeklyData = Object.entries(checked);
-  console.log("🚀 ~ WeeklyReport ~ checked:", checked);
-  // checked 활용해서 raidData에서 타이틀과 난이도 비교 true false를 통해 골드 및 더보기 가져와서 계산 UI 표기
+  const weeklyData = Object.entries(checked || {});
+
+  const calcRaidReward = (raidName, raidInfo) => {
+    const raid = raidData.find((item) => item.title === raidName);
+    if (!raid) return { gold: 0, more: 0 };
+
+    const stage = raid.stages.find(
+      (stage) => stage.difficulty === raidInfo.difficulty
+    );
+    if (!stage) return { gold: 0, more: 0 };
+
+    return {
+      gold: raidInfo.gold ? stage.gold : 0,
+      more: raidInfo.more ? stage.more : 0,
+    };
+  };
+
+  const summaryData = weeklyData?.map(([charName, raids]) => {
+    const charRaidInfo = Object.entries(raids ?? {});
+
+    const total = charRaidInfo.reduce(
+      (acc, [raidName, raidInfo]) => {
+        const reward = calcRaidReward(raidName, raidInfo);
+        acc.gold += reward.gold;
+        acc.more += reward.more;
+        return acc;
+      },
+      { gold: 0, more: 0 }
+    );
+
+    return {
+      charName,
+      charRaidInfo,
+      charTotalGold: total.gold,
+      charTotalMore: total.more,
+    };
+  });
+
+  const totalMoreGold = summaryData?.reduce((acc, char) => {
+    acc += char.charTotalMore;
+    return acc;
+  }, 0);
+
+  // const today = new Date();
+  // const dayOfWeek = today.getDay();
+  // const wednesday = 3;
+
+  // const lastWednesday = today.setDate(
+  //   today.getDate() - ((dayOfWeek + 7 - wednesday) % 7 || 7)
+  // );
+  // console.log(
+  //   "🚀 ~ WeeklyReport ~ lastWednesday:",
+  //   lastWednesday.toLocaleString()
+  // );
+
+  // const formattedDate = `${today.getFullYear()}년 ${
+  //   today.getMonth() + 1
+  // }월 ${today.getDate()}일`;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={[{ fontSize: 30, fontWeight: "bold" }, styles.textWhite]}>
+        <Text style={[{ fontSize: 24, fontWeight: "bold" }, styles.textWhite]}>
           주간 레이드
         </Text>
-        <Text style={[{ fontSize: 16, fontWeight: "bold" }, styles.textWhite]}>
+        <Text style={[{ fontSize: 12, fontWeight: "bold" }, styles.textWhite]}>
           2026.01.14 수
         </Text>
       </View>
-      <View style={styles.inner}>
-        {weeklyData?.map((item) => {
-          const charNickName = item[0];
-          const charRaidInfo = Object.entries(item[1] ?? {});
-
-          return (
-            <View key={charNickName}>
-              <Text style={styles.innerPointText}>{charNickName}</Text>
-              <View style={{ paddingLeft: 30, gap: 5 }}>
-                {charRaidInfo?.map(([raid, value]) => {
+      <ScrollView style={styles.inner}>
+        {summaryData?.map(
+          ({ charName, charRaidInfo, charTotalGold, charTotalMore }) => (
+            <View key={charName}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 8,
+                }}
+              >
+                <Text style={styles.innerPointText}>{charName}</Text>
+                <Text style={styles.innerPointText}>
+                  {(charTotalGold - charTotalMore).toLocaleString()}G
+                </Text>
+              </View>
+              <ScrollView style={{ paddingLeft: 10 }}>
+                {charRaidInfo.map(([raidName, raidInfo]) => {
+                  const reward = calcRaidReward(raidName, raidInfo);
                   return (
-                    <View style={styles.innerItem} key={raid}>
-                      <Text style={styles.innerText}>{raid}</Text>
-                      <Text style={styles.innerText}>{String(value)}</Text>
+                    <View style={styles.innerItem} key={raidName}>
+                      <Text style={{ color: "#CCCCCC" }}>
+                        {raidName}({DIFFICULTY_LABEL[raidInfo.difficulty]})
+                      </Text>
+                      <Text style={{ textAlign: "right", color: "#CCCCCC" }}>
+                        {(reward.gold - reward.more).toLocaleString()}G
+                      </Text>
                     </View>
                   );
                 })}
-              </View>
+              </ScrollView>
             </View>
-          );
-        })}
-
-        <Text style={styles.innerPointText}>닉네임</Text>
-        <View style={{ paddingLeft: 30, gap: 5 }}>
-          <View style={styles.innerItem}>
-            <Text style={styles.innerText}>레이드</Text>
-            <Text style={styles.innerText}>20000G</Text>
-          </View>
-        </View>
-      </View>
+          )
+        )}
+      </ScrollView>
       <View style={styles.bottom}>
         <View style={styles.innerItem}>
-          <Text style={styles.innerPointText}>더보기</Text>
-          <Text style={styles.innerPointText}>-20000G</Text>
+          <Text
+            style={[styles.innerPointText, { color: "#FF7F7F", fontSize: 18 }]}
+          >
+            더보기
+          </Text>
+          <Text
+            style={[styles.innerPointText, { color: "#FF7F7F", fontSize: 18 }]}
+          >
+            -{totalMoreGold?.toLocaleString()}G
+          </Text>
         </View>
         <View style={styles.innerItem}>
-          <Text style={styles.innerPointText}>TOTAL</Text>
-          <Text style={styles.innerPointText}>
+          <Text
+            style={[styles.innerPointText, { color: "yellow", fontSize: 18 }]}
+          >
+            TOTAL
+          </Text>
+          <Text
+            style={[styles.innerPointText, { color: "yellow", fontSize: 18 }]}
+          >
             {totalGold?.toLocaleString()}G
           </Text>
         </View>
@@ -71,7 +148,6 @@ const styles = StyleSheet.create({
     borderColor: "white",
     flex: 1,
     padding: 10,
-    paddingVertical: 20,
     margin: 5,
   },
   header: {
@@ -83,26 +159,26 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   inner: {
-    padding: 30,
-    gap: 10,
+    padding: 10,
     flex: 1,
   },
   innerPointText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
   },
   innerText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
   },
   innerItem: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   bottom: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingHorizontal: 10,
+    marginTop: 5,
+    paddingTop: 5,
     borderTopWidth: 1,
     borderColor: "white",
   },
