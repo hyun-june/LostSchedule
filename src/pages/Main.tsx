@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 import { theme } from "./../theme/theme";
 import AppLayout from "../components/Layout/AppLayout";
-
 import useSearchStore from "../store/useSearchStore";
 import { useEffect } from "react";
 
@@ -11,6 +10,7 @@ const Main = () => {
   useEffect(() => {
     fetchChar();
   }, []);
+
   return (
     <AppLayout>
       {/* <Text style={{ color: "white" }}>Main</Text>

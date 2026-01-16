@@ -2,8 +2,8 @@ import { raidData } from "./raidData";
 
 interface calcRaidInfoProps {
   difficulty: string;
-  gold: number;
-  more: number;
+  gold: boolean;
+  more: boolean;
 }
 
 export const calcRaidReward = (

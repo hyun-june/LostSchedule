@@ -6,12 +6,20 @@ import useSearchStore from "../store/useSearchStore";
 import { useNavigation } from "@react-navigation/native";
 import Homework from "./../pages/Homework";
 import WeeklyReport from "../pages/WeeklyReport";
+import useHomeworkStore from "../store/useHomeworkStore";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
   const { myChar } = useSearchStore();
   const navigation = useNavigation();
+
+  const { checkWeeklyReset } = useHomeworkStore();
+
+  useEffect(() => {
+    checkWeeklyReset();
+  }, []);
 
   return (
     <>

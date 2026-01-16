@@ -1,27 +1,13 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import useHomeworkStore from "../store/useHomeworkStore";
-import { raidData } from "./../utils/raidData";
 import { DIFFICULTY_LABEL } from "../utils/difficultyLabel";
+import { getWednesdayRange } from "../utils/getWednesday";
+import { calcRaidReward } from "../utils/calcRaidReward";
 
 const WeeklyReport = () => {
-  const { checked, charGold, totalGold } = useHomeworkStore();
+  const { checked, totalGold } = useHomeworkStore();
 
   const weeklyData = Object.entries(checked || {});
-
-  const calcRaidReward = (raidName, raidInfo) => {
-    const raid = raidData.find((item) => item.title === raidName);
-    if (!raid) return { gold: 0, more: 0 };
-
-    const stage = raid.stages.find(
-      (stage) => stage.difficulty === raidInfo.difficulty
-    );
-    if (!stage) return { gold: 0, more: 0 };
-
-    return {
-      gold: raidInfo.gold ? stage.gold : 0,
-      more: raidInfo.more ? stage.more : 0,
-    };
-  };
 
   const summaryData = weeklyData?.map(([charName, raids]) => {
     const charRaidInfo = Object.entries(raids ?? {});
@@ -49,21 +35,12 @@ const WeeklyReport = () => {
     return acc;
   }, 0);
 
-  // const today = new Date();
-  // const dayOfWeek = today.getDay();
-  // const wednesday = 3;
-
-  // const lastWednesday = today.setDate(
-  //   today.getDate() - ((dayOfWeek + 7 - wednesday) % 7 || 7)
-  // );
-  // console.log(
-  //   "🚀 ~ WeeklyReport ~ lastWednesday:",
-  //   lastWednesday.toLocaleString()
-  // );
-
-  // const formattedDate = `${today.getFullYear()}년 ${
-  //   today.getMonth() + 1
-  // }월 ${today.getDate()}일`;
+  const { lastWednesday, nextWednesday } = getWednesdayRange();
+  const formattedDate = `${lastWednesday.getFullYear()}. ${
+    lastWednesday.getMonth() + 1
+  }. ${lastWednesday.getDate()}. 10:00 ~ ${nextWednesday.getFullYear()}. ${
+    nextWednesday.getMonth() + 1
+  }. ${nextWednesday.getDate()}. 06:00`;
 
   return (
     <View style={styles.container}>
@@ -72,7 +49,7 @@ const WeeklyReport = () => {
           주간 레이드
         </Text>
         <Text style={[{ fontSize: 12, fontWeight: "bold" }, styles.textWhite]}>
-          2026.01.14 수
+          {formattedDate}
         </Text>
       </View>
       <ScrollView style={styles.inner}>
