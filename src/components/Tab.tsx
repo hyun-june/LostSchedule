@@ -1,21 +1,28 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { theme } from "../theme/theme";
-import CharacterForm from "./CharacterForm";
+import CharEquipment from "./CharacterFormComp/CharEquipment";
+import { CharAllData } from "./../models/charType";
 
-const Tab = ({ data }) => {
+interface TabDataType {
+  data: CharAllData;
+}
+
+const Tab = ({ data }: TabDataType) => {
   const [currentTab, setCurrentTab] = useState<number>(0);
-  //   console.log("🚀 ~ Tab ~ data:", data);
+
   const headerList = [
-    { label: "TAB1", des: <CharacterForm data={data?.ArmoryProfile} /> },
-    { label: "Tab2", des: 22 },
+    { label: "장비", des: <CharEquipment data={data?.ArmoryEquipment} /> },
+    { label: "아크패시브", des: "아크패시브탭" },
+    { label: "스킬", des: "스킬탭" },
+    { label: "아바타", des: "아바타탭" },
   ];
 
   return (
     <View>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", gap: 5 }}>
         {headerList.map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => setCurrentTab(index)}>
+          <Pressable key={index} onPress={() => setCurrentTab(index)}>
             <Text
               style={[
                 styles.tabHeader,
@@ -24,7 +31,7 @@ const Tab = ({ data }) => {
             >
               {item.label}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </View>
       <View style={{ paddingVertical: 20 }}>
@@ -39,23 +46,19 @@ export default Tab;
 const styles = StyleSheet.create({
   tabHeader: {
     marginTop: 20,
-    fontSize: 25,
-    borderTopWidth: 2,
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    fontSize: 12,
+    borderWidth: 2,
+    borderRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderColor: "white",
   },
   activeTab: {
+    borderColor: theme.line.mint,
     color: "white",
-    borderBottomWidth: 0,
   },
   inactiveTab: {
     color: theme.text.gray,
-    borderBottomWidth: 2,
   },
   tabBody: {
     color: "white",

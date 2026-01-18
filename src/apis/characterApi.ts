@@ -20,3 +20,13 @@ export const getCharacter = async (id: string) => {
     throw new Error("Fail to load character Character");
   }
 };
+
+// 캐릭터 프로필
+export const getCharacterProfile = async (id: string) => {
+  try {
+    const response = await instance.get(`${characterURL}/${id}/profiles`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Fail to load character Character");
+  }
+};

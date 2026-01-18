@@ -1,15 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Main from "./src/pages/Main";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   DefaultTheme,
   NavigationContainer,
   Theme,
 } from "@react-navigation/native";
-import Character from "./src/pages/Character";
 import { theme } from "./src/theme/theme";
-import Header from "./src/components/Header";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BottomTab from "./src/components/BottomTab";
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -32,12 +30,12 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <NavigationContainer theme={MyTheme}>
-          <Stack.Navigator
-            initialRouteName="Main"
-            screenOptions={{ header: ({ route }) => <Header /> }}
-          >
-            <Stack.Screen name="Main" component={Main} />
-            <Stack.Screen name="Char" component={Character} />
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Tabs"
+              component={BottomTab}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

@@ -1,7 +1,7 @@
-import { View } from "react-native";
+import { ScrollView } from "react-native";
 
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  return <View style={{ padding: 16, flex: 1 }}>{children}</View>;
+const AppLayout = ({ children }: { children?: React.ReactNode }) => {
+  return <ScrollView style={{ padding: 10, flex: 1 }}>{children}</ScrollView>;
 };
 
 export default AppLayout;

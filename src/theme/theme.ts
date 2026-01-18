@@ -5,6 +5,10 @@ export const theme = {
   text: {
     black: "#333",
     gray: "#8C8C8C",
+    yellow: "#FFB639",
+    blue: "#4472C4",
+    purple: "#C60DFF",
+    red: "#FF4D4D",
   },
   box: {
     blue: {
@@ -19,5 +23,8 @@ export const theme = {
       borderColor: "#DC8900",
       backgroundColor: "#FFB639",
     },
+  },
+  line: {
+    mint: "#00FFAA",
   },
 };

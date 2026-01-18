@@ -3,7 +3,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
   Main: undefined;
-  Char: { searchId: string };
+  Character: { searchId: string };
+  WeeklyReport: undefined;
 };
 
 export type HeaderRouteProp = RouteProp<
@@ -11,6 +12,6 @@ export type HeaderRouteProp = RouteProp<
   keyof RootStackParamList
 >;
 
-export type CharRouteProp = RouteProp<RootStackParamList, "Char">;
+export type CharRouteProp = RouteProp<RootStackParamList, "Character">;
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
