@@ -1,5 +1,5 @@
 const CACHE_NAME = "lostschedule-cache-v1";
-const urlsToCache = ["/", "/index.html"];
+const urlsToCache = ["/", "/index.html", "/favicon.png"];
 
 // Install 이벤트: 캐시 생성
 self.addEventListener("install", (event) => {
