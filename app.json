@@ -28,7 +28,29 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-      "manifest": "./public/manifest.json"
+      "manifest": "./public/manifest.json",
+      "pwa": {
+        "manifest": {
+          "name": "LostSchedule",
+          "short_name": "LostSchedule",
+          "start_url": "/",
+          "display": "standalone",
+          "background_color": "#ffffff",
+          "theme_color": "#ffc030",
+          "icons": [
+            {
+              "src": "/favicon.png",
+              "sizes": "192x192",
+              "type": "image/png"
+            },
+            {
+              "src": "/favicon.png",
+              "sizes": "512x512",
+              "type": "image/png"
+            }
+          ]
+        }
+      }
     },
     "extra": {
       "eas": {
