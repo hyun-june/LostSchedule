@@ -12,6 +12,15 @@ import BottomTab from "./src/components/BottomTab";
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
 
+if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((reg) => console.log("Service Worker registered:", reg))
+      .catch((err) => console.log("Service Worker registration failed:", err));
+  });
+}
+
 const MyTheme: Theme = {
   ...DefaultTheme,
   colors: {

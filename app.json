@@ -27,6 +27,7 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
+      "manifest": "./public/manifest.json"
     },
     "extra": {
       "eas": {
