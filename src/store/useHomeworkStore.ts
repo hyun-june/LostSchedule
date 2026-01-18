@@ -50,7 +50,7 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
             };
             const totalGold = Object.values(nextcharGold).reduce(
               (sum, v) => sum + v,
-              0
+              0,
             );
             return {
               charGold: nextcharGold,
@@ -87,8 +87,8 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
           await AsyncStorage.removeItem(name);
         },
       },
-    }
-  )
+    },
+  ),
 );
 
 export default useHomeworkStore;
