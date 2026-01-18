@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "LostArk",
-    "slug": "LostArk",
+    "name": "LostSchedule",
+    "slug": "LostSchedule",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.hyunjun.lostschedule"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8dc17d83-36db-4c4a-955e-e73fa4928e93"
+      }
     }
   }
 }
