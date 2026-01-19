@@ -52,6 +52,7 @@ const AddCharacter = ({ onClose }: AddCharacterProps) => {
         onChangeText={setInputValue}
         returnKeyType="done"
         onSubmitEditing={() => handleSubmit()}
+        onClick={(e) => e.stopPropagation()}
       />
       <Pressable
         style={{
