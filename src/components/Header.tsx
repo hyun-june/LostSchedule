@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Pressable, View, StyleSheet, Modal } from "react-native";
+import { Pressable, View, StyleSheet, Modal, Platform } from "react-native";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 import { StatusBar } from "expo-status-bar";
@@ -75,12 +75,12 @@ export default Header;
 
 const styles = StyleSheet.create({
   mainHeader: {
-    marginTop: 50,
+    marginTop: Platform.OS === "web" ? 0 : 50,
     marginBottom: 10,
     paddingHorizontal: 16,
   },
   subHeader: {
-    marginTop: 50,
+    marginTop: Platform.OS === "web" ? 0 : 50,
     paddingHorizontal: 16,
   },
 });

@@ -31,6 +31,9 @@ const BottomTab = () => {
         screenOptions={{
           header: ({ route }) => <Header />,
           tabBarLabelPosition: "below-icon",
+          tabBarStyle: {
+            height: 60,
+          },
         }}
       >
         <Tab.Screen
