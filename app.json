@@ -14,7 +14,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hyunjun.lostschedule",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -39,12 +43,12 @@
           "theme_color": "#ffc030",
           "icons": [
             {
-              "src": "/icon-192.png",
+              "src": "icon-192.png",
               "sizes": "192x192",
               "type": "image/png"
             },
             {
-              "src": "/icon-512.png",
+              "src": "icon-512.png",
               "sizes": "512x512",
               "type": "image/png"
             }
@@ -54,7 +58,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "8dc17d83-36db-4c4a-955e-e73fa4928e93"
+        "projectId": "9269177d-8158-4a96-be99-0159b7d6e2fc"
       }
     }
   }
