@@ -19,7 +19,7 @@ const WeeklyReport = () => {
         acc.more += reward.more;
         return acc;
       },
-      { gold: 0, more: 0 }
+      { gold: 0, more: 0 },
     );
 
     return {
@@ -84,7 +84,7 @@ const WeeklyReport = () => {
                 })}
               </ScrollView>
             </View>
-          )
+          ),
         )}
       </ScrollView>
       <View style={styles.bottom}>
@@ -102,12 +102,12 @@ const WeeklyReport = () => {
         </View>
         <View style={styles.innerItem}>
           <Text
-            style={[styles.innerPointText, { color: "yellow", fontSize: 18 }]}
+            style={[styles.innerPointText, { color: "gold", fontSize: 18 }]}
           >
             TOTAL
           </Text>
           <Text
-            style={[styles.innerPointText, { color: "yellow", fontSize: 18 }]}
+            style={[styles.innerPointText, { color: "gold", fontSize: 18 }]}
           >
             {totalGold?.toLocaleString()}G
           </Text>

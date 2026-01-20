@@ -4,7 +4,6 @@ import HomeworkCharBox from "./HomeworkCharBox";
 import { CharData } from "../../models/charType";
 import useRosterStore from "../../store/useRosterStore";
 import { useGetCharacterProfile } from "../../hooks/useGetCharacter";
-import GoldIcon from "./../GoldIcon";
 import useHomeworkStore from "../../store/useHomeworkStore";
 
 interface HomeworkRaidBoxProps {
@@ -21,7 +20,7 @@ const HomeworkRaidBox = () => {
   const sortData = [...(data ?? [])].sort(
     (a, b) =>
       parseFloat(b?.ItemAvgLevel?.replace(/,/g, "")) -
-      parseFloat(a?.ItemAvgLevel?.replace(/,/g, ""))
+      parseFloat(a?.ItemAvgLevel?.replace(/,/g, "")),
   );
 
   if (isInitialLoading) {
@@ -42,9 +41,8 @@ const HomeworkRaidBox = () => {
     <View style={{ paddingBottom: 100 }}>
       <View style={styles.total}>
         <Text style={styles.text}>TOTAL</Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-          <Text style={styles.text}>{totalGold?.toLocaleString()}</Text>
-          <GoldIcon />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={styles.text}>{totalGold?.toLocaleString()}G</Text>
         </View>
       </View>
       {isFetching && <Text>업데이트 중...</Text>}
@@ -72,6 +70,8 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: "white",
+    color: "gold",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
