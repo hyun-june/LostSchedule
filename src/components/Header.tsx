@@ -64,7 +64,10 @@ const Header = () => {
           }}
           onPress={() => setShowModal(false)}
         >
-          <AddCharacter onClose={() => setShowModal(false)} />
+          <Pressable onPress={() => {}}>
+            {/* block background press */}
+            <AddCharacter onClose={() => setShowModal(false)} />
+          </Pressable>
         </Pressable>
       </Modal>
     </View>
