@@ -44,7 +44,7 @@ const AddCharacter = ({ onClose }: AddCharacterProps) => {
   };
 
   return (
-    <View>
+    <View onClick={(e) => e.stopPropagation()}>
       <TextInput
         placeholder="등록할 아이디를 입력해주세요."
         style={styles.AddInput}
