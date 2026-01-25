@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import { useEffect, useState } from "react";
-import GoldIcon from "../GoldIcon";
 import { raidData } from "./../../utils/raidData";
 import useHomeworkStore from "../../store/useHomeworkStore";
 import { DIFFICULTY_LABEL } from "../../utils/difficultyLabel";
@@ -62,26 +61,6 @@ const HomeworkCharBox = ({ ...props }) => {
   useEffect(() => {
     setCharGold(CharacterName, totalGoldForChar);
   }, [totalGoldForChar]);
-
-  // useEffect(() => {
-  //   const checkedChar = checked[CharacterName];
-  //   if (!checkedChar) return;
-  //   Object.keys(checkedChar).forEach((title) => {
-  //     const raid = raidData.find((r) => r.title === title);
-  //     if (!raid) return;
-
-  //     const stage = raid.stages.find(
-  //       (s) => s.difficulty === selectedDifficulty[raid.raidKey]
-  //     );
-
-  //     setChecked(CharacterName, title, {
-  //       ...checkedChar[title],
-  //       difficulty: stage?.difficulty,
-  //       more: moreActive[raid.raidKey] ?? false,
-  //       gold: goldSelect[raid.raidKey] ?? false,
-  //     });
-  //   });
-  // }, [selectedDifficulty, goldSelect, moreActive]);
 
   useEffect(() => {
     const checkedChar = checked[CharacterName];
@@ -190,8 +169,9 @@ const HomeworkCharBox = ({ ...props }) => {
             <Text style={styles.text}>{CharacterName}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-            <Text style={styles.text}>{totalGoldForChar.toLocaleString()}</Text>
-            <GoldIcon />
+            <Text style={styles.text}>
+              {totalGoldForChar.toLocaleString()}G
+            </Text>
           </View>
         </View>
       </View>

@@ -8,6 +8,10 @@ import Homework from "./../pages/Homework";
 import WeeklyReport from "../pages/WeeklyReport";
 import useHomeworkStore from "../store/useHomeworkStore";
 import { useEffect } from "react";
+import { Text } from "react-native";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Octicons from "@expo/vector-icons/Octicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,17 +32,39 @@ const BottomTab = () => {
       <Tab.Navigator
         screenOptions={{
           header: ({ route }) => <Header />,
+          tabBarLabelPosition: "below-icon",
+          tabBarStyle: {
+            height: 60,
+          },
         }}
       >
         <Tab.Screen
           name="Main"
           component={Main}
-          options={{ tabBarLabel: "홈" }}
+          options={{
+            tabBarLabel: () => (
+              <Text style={{ fontSize: 12, marginTop: 2, color: "white" }}>
+                홈
+              </Text>
+            ),
+            tabBarIcon: () => (
+              <FontAwesome5 name="home" size={24} color="white" />
+            ),
+          }}
         />
         <Tab.Screen
           name="Character"
           component={Character}
-          options={{ tabBarLabel: "캐릭터" }}
+          options={{
+            tabBarLabel: () => (
+              <Text style={{ fontSize: 12, marginTop: 2, color: "white" }}>
+                캐릭터
+              </Text>
+            ),
+            tabBarIcon: () => (
+              <Octicons name="person" size={24} color="white" />
+            ),
+          }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               if (!myChar) {
@@ -51,12 +77,30 @@ const BottomTab = () => {
         <Tab.Screen
           name="MyChar"
           component={Homework}
-          options={{ tabBarLabel: "숙제" }}
+          options={{
+            tabBarLabel: () => (
+              <Text style={{ fontSize: 12, marginTop: 2, color: "white" }}>
+                숙제
+              </Text>
+            ),
+            tabBarIcon: () => (
+              <AntDesign name="schedule" size={24} color="white" />
+            ),
+          }}
         />
         <Tab.Screen
           name="WeeklyReport"
           component={WeeklyReport}
-          options={{ tabBarLabel: "주간 레이드" }}
+          options={{
+            tabBarLabel: () => (
+              <Text style={{ fontSize: 12, marginTop: 2, color: "white" }}>
+                주간 레이드
+              </Text>
+            ),
+            tabBarIcon: () => (
+              <FontAwesome5 name="receipt" size={24} color="white" />
+            ),
+          }}
         />
       </Tab.Navigator>
     </>
