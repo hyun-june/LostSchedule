@@ -84,26 +84,19 @@ const HomeworkCharBox = ({ ...props }) => {
     setSelectedDifficulty((prev) => ({ ...prev, ...nextDiff }));
   }, [CharacterName]);
 
-  const handleMore = (raid) => {
-    setMoreActive((prev) => {
-      const next = {
-        ...prev,
-        [raid.raidKey]: !prev[raid.raidKey],
-      };
-
-      const shouldCheck = next[raid.raidKey] || goldSelect[raid.raidKey];
+  useEffect(() => {
+    raidData.forEach((raid) => {
+      const shouldCheck = moreActive[raid.raidKey] || goldSelect[raid.raidKey];
       toggleCheck(CharacterName, raid, shouldCheck);
-
-      return next;
     });
-  };
+  }, [moreActive, goldSelect]);
 
   const toggleCheck = (CharacterName, raid, value) => {
     const { title, stages, raidKey } = raid;
 
-    const currentStage = stages.find(
-      (stage) => stage.difficulty === selectedDifficulty[raidKey],
-    );
+    const currentStage =
+      stages.find((s) => s.difficulty === selectedDifficulty[raidKey]) ||
+      stages[0];
 
     if (!value) {
       setChecked(CharacterName, title, undefined);
@@ -114,6 +107,13 @@ const HomeworkCharBox = ({ ...props }) => {
       gold: goldSelect[raidKey] ?? false,
       more: moreActive[raidKey] ?? false,
     });
+  };
+
+  const handleMore = (raid) => {
+    setMoreActive((prev) => ({
+      ...prev,
+      [raid.raidKey]: !prev[raid.raidKey],
+    }));
   };
 
   const selectGold = (raid) => {
@@ -129,13 +129,6 @@ const HomeworkCharBox = ({ ...props }) => {
         alert("골드는 최대 3개 레이드까지만 받을 수 있어요!");
         return prev;
       }
-      const next = {
-        ...prev,
-        [raid.raidKey]: !prev[raid.raidKey],
-      };
-
-      const shouldCheck = next[raid.raidKey] || moreActive[raid.raidKey];
-      toggleCheck(CharacterName, raid, shouldCheck);
 
       return { ...prev, [raid.raidKey]: true };
     });
@@ -270,15 +263,17 @@ const HomeworkCharBox = ({ ...props }) => {
                     ))}
                   </View>
                   {/* 더보기 */}
-                  <Pressable style={styles.moreBtn}>
+                  <Pressable
+                    style={styles.moreBtn}
+                    onPress={() => {
+                      handleMore(raid);
+                    }}
+                  >
                     <Text
                       style={[
                         { color: "gray" },
                         moreActive[raid.raidKey] && styles.textActive,
                       ]}
-                      onPress={() => {
-                        handleMore(raid);
-                      }}
                     >
                       더보기
                     </Text>
@@ -288,6 +283,8 @@ const HomeworkCharBox = ({ ...props }) => {
             </Pressable>
           );
         })}
+        console.log("🚀 ~ HomeworkCharBox ~ raidData:", raidData)
+        console.log("🚀 ~ HomeworkCharBox ~ raidData:", raidData)
       </ScrollView>
     </View>
   );

@@ -3,6 +3,7 @@ import useHomeworkStore from "../store/useHomeworkStore";
 import { DIFFICULTY_LABEL } from "../utils/difficultyLabel";
 import { getWednesdayRange } from "../utils/getWednesday";
 import { calcRaidReward } from "../utils/calcRaidReward";
+import { raidData } from "../utils/raidData";
 
 const WeeklyReport = () => {
   const { checked, totalGold } = useHomeworkStore();
@@ -10,7 +11,13 @@ const WeeklyReport = () => {
   const weeklyData = Object.entries(checked || {});
 
   const summaryData = weeklyData?.map(([charName, raids]) => {
-    const charRaidInfo = Object.entries(raids ?? {});
+    // const charRaidInfo = Object.entries(raids ?? {});
+
+    const raidOrder = raidData.map((r) => r.title);
+
+    const charRaidInfo = Object.entries(raids ?? {}).sort(
+      ([raidA], [raidB]) => raidOrder.indexOf(raidA) - raidOrder.indexOf(raidB),
+    );
 
     const total = charRaidInfo.reduce(
       (acc, [raidName, raidInfo]) => {
@@ -116,6 +123,7 @@ const WeeklyReport = () => {
     </View>
   );
 };
+console.log("🚀 ~ WeeklyReport ~ WeeklyReport:", WeeklyReport);
 
 export default WeeklyReport;
 
