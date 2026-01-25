@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { getWednesdayRange } from "../utils/getWednesday";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
 interface CheckedData {
   difficulty: string;
@@ -16,10 +17,17 @@ interface MyHomeWorkStore {
   charGold: Record<string, number>;
   totalGold: number;
   lastResetAt: number | null;
+  hasHydrated: boolean;
+  setHasHydrated: (v: boolean) => void;
   setChecked: (charId: string, title: string, data: CheckedData | null) => void;
   setCharGold: (charId: string, value: number) => void;
   checkWeeklyReset: () => void;
 }
+
+const storage =
+  Platform.OS === "web"
+    ? createJSONStorage(() => localStorage)
+    : createJSONStorage(() => AsyncStorage);
 
 const useHomeworkStore = create<MyHomeWorkStore>()(
   persist(
@@ -29,6 +37,8 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
         charGold: {},
         totalGold: 0,
         lastResetAt: null,
+        hasHydrated: false,
+        setHasHydrated: (v) => set({ hasHydrated: v }),
         setChecked: (charId, title, data) =>
           set((state) => {
             const next = { ...state.checked };
@@ -61,7 +71,6 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
           const { lastWednesday } = getWednesdayRange();
           const currentBase = lastWednesday.getTime();
           const lastBase = get().lastResetAt;
-
           if (lastBase !== currentBase) {
             set({
               checked: {},

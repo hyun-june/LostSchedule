@@ -24,7 +24,7 @@ const HomeworkCharBox = ({ ...props }) => {
   const { setCharGold, checked, setChecked } = useHomeworkStore();
 
   const raidDifficulty = Object.fromEntries(
-    raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty])
+    raidData.map((raid) => [raid.raidKey, raid.stages[0].difficulty]),
   );
 
   const [selectedDifficulty, setSelectedDifficulty] =
@@ -33,7 +33,7 @@ const HomeworkCharBox = ({ ...props }) => {
   const getGoldValue = (raid) => {
     const stage =
       raid.stages.find(
-        (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+        (s) => s.difficulty === selectedDifficulty[raid.raidKey],
       ) || raid.stages[0];
 
     if (!stage) return 0;
@@ -56,32 +56,54 @@ const HomeworkCharBox = ({ ...props }) => {
 
   const totalGoldForChar = raidData.reduce(
     (sum, raid) => sum + getGoldValue(raid),
-    0
+    0,
   );
 
   useEffect(() => {
     setCharGold(CharacterName, totalGoldForChar);
   }, [totalGoldForChar]);
 
+  // useEffect(() => {
+  //   const checkedChar = checked[CharacterName];
+  //   if (!checkedChar) return;
+  //   Object.keys(checkedChar).forEach((title) => {
+  //     const raid = raidData.find((r) => r.title === title);
+  //     if (!raid) return;
+
+  //     const stage = raid.stages.find(
+  //       (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+  //     );
+
+  //     setChecked(CharacterName, title, {
+  //       ...checkedChar[title],
+  //       difficulty: stage?.difficulty,
+  //       more: moreActive[raid.raidKey] ?? false,
+  //       gold: goldSelect[raid.raidKey] ?? false,
+  //     });
+  //   });
+  // }, [selectedDifficulty, goldSelect, moreActive]);
+
   useEffect(() => {
     const checkedChar = checked[CharacterName];
     if (!checkedChar) return;
-    Object.keys(checkedChar).forEach((title) => {
+
+    const nextGold: Record<string, boolean> = {};
+    const nextMore: Record<string, boolean> = {};
+    const nextDiff: Record<string, string> = {};
+
+    Object.entries(checkedChar).forEach(([title, data]) => {
       const raid = raidData.find((r) => r.title === title);
       if (!raid) return;
 
-      const stage = raid.stages.find(
-        (s) => s.difficulty === selectedDifficulty[raid.raidKey]
-      );
-
-      setChecked(CharacterName, title, {
-        ...checkedChar[title],
-        difficulty: stage?.difficulty,
-        more: moreActive[raid.raidKey] ?? false,
-        gold: goldSelect[raid.raidKey] ?? false,
-      });
+      nextGold[raid.raidKey] = data.gold;
+      nextMore[raid.raidKey] = data.more;
+      nextDiff[raid.raidKey] = data.difficulty;
     });
-  }, [selectedDifficulty, goldSelect, moreActive]);
+
+    setGoldSelect(nextGold);
+    setMoreActive(nextMore);
+    setSelectedDifficulty((prev) => ({ ...prev, ...nextDiff }));
+  }, [CharacterName]);
 
   const handleMore = (raid) => {
     setMoreActive((prev) => {
@@ -101,7 +123,7 @@ const HomeworkCharBox = ({ ...props }) => {
     const { title, stages, raidKey } = raid;
 
     const currentStage = stages.find(
-      (stage) => stage.difficulty === selectedDifficulty[raidKey]
+      (stage) => stage.difficulty === selectedDifficulty[raidKey],
     );
 
     if (!value) {
@@ -176,12 +198,12 @@ const HomeworkCharBox = ({ ...props }) => {
       <ScrollView style={styles.raid}>
         {raidData.map((raid) => {
           const stage = raid.stages.find(
-            (s) => s.difficulty === selectedDifficulty[raid.raidKey]
+            (s) => s.difficulty === selectedDifficulty[raid.raidKey],
           );
 
           const goldValue = moreActive[raid.raidKey]
             ? (stage?.gold ?? 0) - (stage?.more ?? 0)
-            : stage?.gold ?? 0;
+            : (stage?.gold ?? 0);
 
           return (
             <Pressable
@@ -191,7 +213,7 @@ const HomeworkCharBox = ({ ...props }) => {
                 toggleCheck(
                   CharacterName,
                   raid,
-                  !checked[CharacterName]?.[raid.title]
+                  !checked[CharacterName]?.[raid.title],
                 )
               }
             >

@@ -15,11 +15,13 @@ const BottomTab = () => {
   const { myChar } = useSearchStore();
   const navigation = useNavigation();
 
-  const { checkWeeklyReset } = useHomeworkStore();
+  const { checkWeeklyReset, hasHydrated } = useHomeworkStore();
 
   useEffect(() => {
-    checkWeeklyReset();
-  }, []);
+    if (hasHydrated) {
+      checkWeeklyReset();
+    }
+  }, [hasHydrated]);
 
   return (
     <>
