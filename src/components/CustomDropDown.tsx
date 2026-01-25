@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   dropdownListItem: {
     paddingVertical: 10,
-
+    backgroundColor: "black",
     borderBottomWidth: 1,
     borderColor: "gray",
     paddingHorizontal: 10,

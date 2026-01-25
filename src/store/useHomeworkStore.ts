@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { getWednesdayRange } from "../utils/getWednesday";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
 
 interface CheckedData {
   difficulty: string;
@@ -23,11 +22,6 @@ interface MyHomeWorkStore {
   setCharGold: (charId: string, value: number) => void;
   checkWeeklyReset: () => void;
 }
-
-const storage =
-  Platform.OS === "web"
-    ? createJSONStorage(() => localStorage)
-    : createJSONStorage(() => AsyncStorage);
 
 const useHomeworkStore = create<MyHomeWorkStore>()(
   persist(
