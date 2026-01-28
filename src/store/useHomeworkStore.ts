@@ -90,6 +90,9 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
           await AsyncStorage.removeItem(name);
         },
       },
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

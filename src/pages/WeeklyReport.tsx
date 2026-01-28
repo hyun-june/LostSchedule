@@ -123,7 +123,6 @@ const WeeklyReport = () => {
     </View>
   );
 };
-console.log("🚀 ~ WeeklyReport ~ WeeklyReport:", WeeklyReport);
 
 export default WeeklyReport;
 
