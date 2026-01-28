@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { getWednesdayRange } from "../utils/getWednesday";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { getWeeklyResetBase } from "../utils/getWednesday";
+import { persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
 
 interface CheckedData {
   difficulty: string;
@@ -67,19 +66,18 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
               totalGold,
             };
           }),
-        // checkWeeklyReset: () => {
-        //   const { lastWednesday } = getWednesdayRange();
-        //   const currentBase = lastWednesday.getTime();
-        //   const lastBase = get().lastResetAt;
-        //   if (lastBase !== currentBase) {
-        //     set({
-        //       checked: {},
-        //       charGold: {},
-        //       totalGold: 0,
-        //       lastResetAt: currentBase,
-        //     });
-        //   }
-        // },
+        checkWeeklyReset: () => {
+          const currentBase = getWeeklyResetBase();
+          const lastBase = get().lastResetAt;
+          if (lastBase !== currentBase) {
+            set({
+              checked: {},
+              charGold: {},
+              totalGold: 0,
+              lastResetAt: currentBase,
+            });
+          }
+        },
       };
     },
     {
@@ -96,9 +94,9 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
           await AsyncStorage.removeItem(name);
         },
       },
-      // onRehydrateStorage: () => (state) => {
-      //   state?.setHasHydrated(true);
-      // },
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

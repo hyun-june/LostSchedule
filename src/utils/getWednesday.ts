@@ -53,3 +53,19 @@ export const getWednesdayRange = () => {
   nextWednesday.setDate(baseWednesday.getDate() + 7);
   return { lastWednesday, nextWednesday };
 };
+
+export const getWeeklyResetBase = () => {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = day >= 3 ? day - 3 : day + 4;
+
+  const wednesday = new Date(now);
+  wednesday.setDate(now.getDate() - diff);
+  wednesday.setHours(10, 0, 0, 0);
+
+  if (now < wednesday) {
+    wednesday.setDate(wednesday.getDate() - 7);
+  }
+
+  return wednesday.getTime();
+};
