@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { getWednesdayRange } from "../utils/getWednesday";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
 interface CheckedData {
   difficulty: string;
@@ -22,6 +23,11 @@ interface MyHomeWorkStore {
   setCharGold: (charId: string, value: number) => void;
   checkWeeklyReset: () => void;
 }
+
+// const storage =
+//   Platform.OS === "web"
+//     ? createJSONStorage(() => localStorage)
+//     : createJSONStorage(() => AsyncStorage);
 
 const useHomeworkStore = create<MyHomeWorkStore>()(
   persist(
@@ -61,19 +67,19 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
               totalGold,
             };
           }),
-        checkWeeklyReset: () => {
-          const { lastWednesday } = getWednesdayRange();
-          const currentBase = lastWednesday.getTime();
-          const lastBase = get().lastResetAt;
-          if (lastBase !== currentBase) {
-            set({
-              checked: {},
-              charGold: {},
-              totalGold: 0,
-              lastResetAt: currentBase,
-            });
-          }
-        },
+        // checkWeeklyReset: () => {
+        //   const { lastWednesday } = getWednesdayRange();
+        //   const currentBase = lastWednesday.getTime();
+        //   const lastBase = get().lastResetAt;
+        //   if (lastBase !== currentBase) {
+        //     set({
+        //       checked: {},
+        //       charGold: {},
+        //       totalGold: 0,
+        //       lastResetAt: currentBase,
+        //     });
+        //   }
+        // },
       };
     },
     {
@@ -90,9 +96,9 @@ const useHomeworkStore = create<MyHomeWorkStore>()(
           await AsyncStorage.removeItem(name);
         },
       },
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
+      // onRehydrateStorage: () => (state) => {
+      //   state?.setHasHydrated(true);
+      // },
     },
   ),
 );
