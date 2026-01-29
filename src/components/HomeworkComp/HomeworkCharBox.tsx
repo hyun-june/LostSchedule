@@ -283,8 +283,6 @@ const HomeworkCharBox = ({ ...props }) => {
             </Pressable>
           );
         })}
-        console.log("🚀 ~ HomeworkCharBox ~ raidData:", raidData)
-        console.log("🚀 ~ HomeworkCharBox ~ raidData:", raidData)
       </ScrollView>
     </View>
   );

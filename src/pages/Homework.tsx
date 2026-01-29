@@ -43,12 +43,17 @@ const Homework = () => {
   }, data);
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View style={{ zIndex: 10 }}>
         <HomeworkDropdown sortData={sortData} />
       </View>
 
-      <ScrollView style={{ paddingHorizontal: 10 }}>
+      <ScrollView
+        style={{
+          paddingHorizontal: 10,
+          flex: 1,
+        }}
+      >
         <HomeworkRaidBox data={data} />
       </ScrollView>
     </View>
